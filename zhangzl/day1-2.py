@@ -2,7 +2,7 @@
 # @Author: Lucien Zhang
 # @Date:   2019-03-24 20:59:16
 # @Last Modified by:   Lucien Zhang
-# @Last Modified time: 2019-03-24 21:28:15
+# @Last Modified time: 2019-03-24 21:48:40
 line = input('input record:')
 records = {}
 while line:
@@ -12,7 +12,7 @@ while line:
     else:
         records[item] = 1
     line = input('input record:')
-record_list = sorted(records.items(), key=lambda item: item[1])
+record_list = sorted(records.items(), key=lambda item: item[1], reverse=True)
 for i in range(min(len(records), 8)):
     file_name, line_number = record_list[i][0].split()
     count = record_list[i][1]
