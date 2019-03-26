@@ -12,12 +12,10 @@
 arr=list(map(int,input('type a list here: ').split()))
 line2=input('type a target number here: ')
 
-#arr=list(map(int,line1))
-#arr=int,arr)
 target=int(line2)
 res=[]
-print(arr)
-print(target)
+print('arr: ',arr)
+print('target: ',target)
 print('len(arr) ',len(arr),'\n')
 
 if len(arr)<2:
