@@ -7,6 +7,19 @@
 因为 nums[0] + nums[1] = 2 + 7 = 9
 所以返回 [0, 1]
 '''
+'''
+这里是函数的实现:
+class Solution(object):
+    def twoSum(self, nums, target):
+        tmp=[]
+        for i in range(0,len(nums)):
+            for j in range(i+1,len(nums)):
+                if nums[i]+nums[j]==target:
+                    tmp.append(i)
+                    tmp.append(j)
+        return tmp
+'''
+
 
 # -*- coding: UTF-8 -*-
 arr=list(map(int,input('type a list here: ').split()))
