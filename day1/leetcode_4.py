@@ -22,7 +22,7 @@ https://leetcode-cn.com/explore/interview/card/top-interview-questions-easy/1/ar
 输入: [9,9]
 输出: [1,0,0]
 '''
---------------***--------------
+# --------------***--------------
 
 '''
 a=[1,2,3]
