@@ -2,13 +2,13 @@
 # @Author: Lucien Zhang
 # @Date:   2019-03-29 15:37:16
 # @Last Modified by:   Lucien Zhang
-# @Last Modified time: 2019-03-29 17:28:52
+# @Last Modified time: 2019-03-29 21:21:36
 
-''' Input: adjacency matrix of graph G
+""" Input: adjacency matrix of graph G
             initial node i
     DFS, depth first search
     reversed pop order is a solution for topological sorting problem
-'''
+"""
 
 from typing import List
 
@@ -40,11 +40,11 @@ def DFS(G: List[List[int]], i: int) -> None:
 
 
 if __name__ == "__main__":
-    '''
+    """
     0-1  4-5
     |    |
     2-3  6
-    '''
+    """
     G = [[1, 1, 1, 0, 0, 0, 0],
          [1, 1, 0, 0, 0, 0, 0],
          [1, 0, 1, 1, 0, 0, 0],

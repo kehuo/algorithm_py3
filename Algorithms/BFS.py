@@ -2,12 +2,12 @@
 # @Author: Lucien Zhang
 # @Date:   2019-03-29 16:53:02
 # @Last Modified by:   Lucien Zhang
-# @Last Modified time: 2019-03-29 17:29:47
+# @Last Modified time: 2019-03-29 21:21:39
 
-''' Input: adjacency matrix of graph G
+""" Input: adjacency matrix of graph G
             initial node i
     BFS, breadth first search
-'''
+"""
 
 from typing import List
 
@@ -37,11 +37,11 @@ def BFS(G: List[List[int]], i: int) -> None:
 
 
 if __name__ == "__main__":
-    '''
+    """
     0-1  4-5
     |    |
     2-3  6
-    '''
+    """
     G = [[1, 1, 1, 0, 0, 0, 0],
          [1, 1, 0, 0, 0, 0, 0],
          [1, 0, 1, 1, 0, 0, 0],
