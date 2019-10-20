@@ -94,6 +94,8 @@ def snake(raw, m, n):
     count = 0
     while True:
         num = raw[count]
+        print(i, j, num)
+
         res[i][j] = num
 
         count += 1
@@ -102,6 +104,14 @@ def snake(raw, m, n):
         if count == len(raw) - 1:
             res[m-1][n-1] = raw[-1]
             break
+
+        # 如果row或者col = 1， 那特殊处理
+        if m == 1:
+            i, j = move_i_j_by_direction("right", i, j)
+            continue
+        if n == 1:
+            i, j = move_i_j_by_direction("down", i, j)
+            continue
 
         # 以下程序判断: 将num填到 res 中的哪个位置
         # 顶部
@@ -117,10 +127,16 @@ def snake(raw, m, n):
                     i, j = move_i_j_by_direction(direction, i, j)
                     continue
                 else:
-                    direction = "right"
-                    i, j = move_i_j_by_direction(direction, i, j)
-                    direction = "left_down"
-                    continue
+                    # 右上角
+                    if j == n - 1:
+                        direction = "down"
+                        i, j = move_i_j_by_direction(direction, i, j)
+                        continue
+                    else:
+                        direction = "right"
+                        i, j = move_i_j_by_direction(direction, i, j)
+                        direction = "left_down"
+                        continue
 
         # 底部 >> 判断右上
         elif i == m - 1:
@@ -180,11 +196,13 @@ if __name__ == '__main__':
     ]
     """
 
-    raw_data = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
-    row = 4
-    col = 4
-    snake_list = snake(raw_data, row, col)
+    # raw_data = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
+    raw_data = range(1, 11)
+    row = 10
+    col = 1
     print("输入:%d x %d: %s" % (row, col, raw_data))
+
+    snake_list = snake(raw_data, row, col)
     print("结果:")
     for r in snake_list:
         print(r)
