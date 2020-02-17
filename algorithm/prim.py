@@ -1,10 +1,3 @@
-# -*- coding: utf-8 -*-
-
-"""Greedy Algorithm, a solution for minimum spanning tree problem
-   imput: a graph
-   output: a tree
-"""
-
 from typing import List
 from data_structure.heap import DeepMinHeap
 
@@ -12,6 +5,10 @@ inf = float("inf")
 
 
 class PrimDeepMinHeap(DeepMinHeap):
+    """Greedy Algorithm, a solution for minimum spanning tree problem
+       imput: a graph
+       output: a tree
+    """
     def prior(self, v1, v2):
         return v1[1] < v2[1]
 

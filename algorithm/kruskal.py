@@ -6,7 +6,7 @@ from data_structure.union_find import QuickUnion2
 inf = float("inf")
 
 
-def Kruskal(G: List[List[int]]) -> List[List[int]]:
+def kruskal(G: List[List[int]]) -> List[List[int]]:
     # (start,end,weight)
     edges = []
     N = len(G)
@@ -39,7 +39,7 @@ if __name__ == "__main__":
          [6, inf, inf, 8, 0, 2],
          [5, 4, 4, 5, 2, 0]]
 
-    Ts = [Kruskal(G)]
+    Ts = [kruskal(G)]
     for T in Ts:
         for row in T:
             print(row)

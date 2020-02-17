@@ -1,9 +1,7 @@
-# -*- coding: utf-8 -*-
-
 from typing import List
 
 
-def Lomuto(L: List[int], low: int, high: int) -> int:
+def lomuto(L: List[int], low: int, high: int) -> int:
     assert low >= 0
     assert high < len(L)
 
@@ -17,7 +15,7 @@ def Lomuto(L: List[int], low: int, high: int) -> int:
     return edge
 
 
-def Hoare(L: List[int], low: int, high: int) -> int:
+def hoare(L: List[int], low: int, high: int) -> int:
     """ pivot = L[low]
         i = low
         j = hight + 1
@@ -59,12 +57,12 @@ def Hoare(L: List[int], low: int, high: int) -> int:
 if __name__ == "__main__":
     L = [4, 1, 10, 8, 7, 12, 9, 2, 15]
     print("origin list:", L)
-    index = Lomuto(L, 0, len(L) - 1)
-    print("after Lomuto partition, element of index={} is located:".format(index), L)
+    index = lomuto(L, 0, len(L) - 1)
+    print("after lomuto partition, element of index={} is located:".format(index), L)
 
     print("-" * 10)
 
     L = [4, 1, 10, 8, 7, 12, 9, 2, 15]
     print("origin list:", L)
-    index = Hoare(L, 0, len(L) - 1)
-    print("after Hoare partition, element of index={} is located:".format(index), L)
+    index = hoare(L, 0, len(L) - 1)
+    print("after hoare partition, element of index={} is located:".format(index), L)

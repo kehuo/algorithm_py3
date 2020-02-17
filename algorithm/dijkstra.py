@@ -1,4 +1,6 @@
-# -*- coding: utf-8 -*-
+if __name__ == '__main__':
+    import sys
+    sys.path.append("..")
 
 from typing import List
 from data_structure.heap import DeepMinHeap

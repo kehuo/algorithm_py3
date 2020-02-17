@@ -1,17 +1,14 @@
-# -*- coding: utf-8 -*-
-
-""" Input: adjacency matrix of graph G
-            initial node i
-    BFS, breadth first search
-"""
-
 from typing import List
 
 visited_nodes = set()
 queue_order = []
 
 
-def BFS(G: List[List[int]], i: int) -> None:
+def bfs(G: List[List[int]], i: int) -> None:
+    """ Input: adjacency matrix of graph G
+                initial node i
+        BFS - breadth first search
+    """
     # to make sure G is a square matrix
     for row in G:
         assert len(G) == len(row)
@@ -50,5 +47,5 @@ if __name__ == "__main__":
         if i not in visited_nodes:
             trees += 1
             print("tree number {} start".format(trees))
-            BFS(G, i)
+            bfs(G, i)
             print("queue order is", queue_order)
