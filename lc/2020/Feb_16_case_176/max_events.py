@@ -1,3 +1,4 @@
+import heapq
 if __name__ == '__main__':
     import sys
     sys.path.append("..")
@@ -138,10 +139,10 @@ def max_events_v3(events):
 
 def max_events_v4(events):
     """
-    v4 - 时间复杂度 - O(n^^2)
-    相对于v3, 这个版本需要大幅度优化2.1:
+    v4 - 时间复杂度 - O(n)
+    相对于v3, 这个版本优化了2.1:
         1. 将 all_options 一个字典存储的信息, 分成 start_dict 和 end_dict 2个字典存储
-        2. 将 初始化这2个字典的步骤, 尽量移到 step2 大循环之外.
+        2. 将 初始化这2个字典的步骤, 移到 step2 大循环之外.
 
     该版本已通过 leetcode 测试 - 1800ms / 70MB
     todo 优化2.2 - 通过 堆 实现 优先队列 > 使得2.2的整体效率达到 O(log(n))
@@ -184,6 +185,54 @@ def max_events_v4(events):
             # 将已选择的会议从 options 数组中删除
             res += 1
             options.remove(end_soon)
+    return res
+
+
+def max_events_v5(events):
+    """
+    2020-02-22 在v4的基础上, 对2.2步骤使用优先队列实现, 优化性能.
+    """
+    # 1 准备工作
+    # 1.1 - 计算所有会议中 最早开始的时间min_start 和 最晚结束的时间max_end - 复杂度 O(n)
+    min_start = min([i[0] for i in events])
+    max_end = max([j[1] for j in events])
+
+    # 1.2 初始化 end_dict - O(n)
+    start_dict = {}
+    end_dict = {}
+    for today in range(min_start, max_end + 1):
+        start_dict[today] = []
+        end_dict[today] = []
+
+    # 1.3 遍历events, 构造 end_dict - O(n). 因为append操作是O(1)复杂度
+    for idx in range(len(events)):
+        one = events[idx]
+        start_dict[one[0]].append(idx)
+        end_dict[one[1]].append(idx)
+
+    res = 0
+    options = []
+    # 2 主循环 O(n)
+    for today in range(min_start, max_end + 1):
+        # 2.1 每天动态的维护 options 数组.
+        # 维护方式 - 第i天放入start_end[i], 并删除 end_dict[i-1]. 若 i==1 则不用删除, 只放入.
+
+        # 将 start_dict[today] 中的项写入 options
+        for k in start_dict[today]:
+            heapq.heappush(options, [events[k][1], events[k][0]])
+        # 删除前一天的 end_dict[i-1]
+        # todo 2020-02-22 注释 - 这里heapq.heappop 方法有问题, 之后再优化
+        if today > min_start:
+            for m in end_dict[today - 1]:
+                if options[0][0] < today:
+                    heapq.heappop(options)
+
+        # 2.2
+        if len(options) > 0:
+            # 调用 extract_max 方法, 找到并弹出最大值, 作为要参加的会议
+            end_soon = heapq.heappop(options)
+            res += 1
+
     return res
 
 
