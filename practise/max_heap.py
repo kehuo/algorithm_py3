@@ -1,4 +1,8 @@
 class MaxHeap(object):
+    """
+    这个类的实现, 完全基于<算法导论 第六章 - 第三版>
+    The implementation of this class is based on <Introduction to Algorithms - Third Edition>
+    """
     def __init__(self, raw_array):
         """for a heap, index should between 1 - len(array), not 0 - [len(array) - 1]"""
         self.array = raw_array
