@@ -17,19 +17,16 @@ def balanceBST(root: TreeNode):
     https://leetcode-cn.com/problems/balance-a-binary-search-tree/
 
     分2步:
-    1. bfs遍历所有节点, 全部放入一个数组, 并保证这个数组是个有序数组
-    2. 使用二分法, 将一个有序数组构造为一颗平衡二叉搜索树
+    1. bfs或者dfs 遍历所有节点, 全部放入一个数组,
+    2. 对数组排序, 保证这个数组是个有序数组
+    2. 使用二分法, 将这个有序数组构造为一棵平衡二叉搜索树
     """
     def _bfs(_node):
         """功能函数1 - 广度优先搜索"""
-        _sorted_array = []
-        visited = []
+        _array = []
         q = [_node]
         while q:
             curr = q.pop(0)
-            if curr in visited:
-                continue
-            visited.append(curr)
 
             if curr.left:
                 q.append(curr.left)
@@ -38,12 +35,29 @@ def balanceBST(root: TreeNode):
 
             curr.left = None
             curr.right = None
-            _sorted_array.append(curr)
-        _sorted_array.sort(key=lambda elem:elem.val)
-        return _sorted_array
+            _array.append(curr)
+        return _array
+
+    def _dfs(_node):
+        """功能函数2 -- 深度优先搜索 (因为做题是为了学习, 所以深度和广度搜索, 都顺便在这个题中复习一下)"""
+        _array = []
+        q = [_node]
+        while q:
+            # 和bfs唯一的区别, 就是把pop(0) 改成 pop(-1)
+            curr = q.pop(-1)
+
+            if curr.left:
+                q.append(curr.left)
+            if curr.right:
+                q.append(curr.right)
+
+            curr.left = None
+            curr.right = None
+            _array.append(curr)
+        return _array
 
     def _erfen(_array):
-        """功能函数2 - 二分法"""
+        """功能函数3 - 二分法"""
         if len(_array) == 0:
             return None
         # 二分法重构一颗平衡二叉树
@@ -57,9 +71,11 @@ def balanceBST(root: TreeNode):
 
         return _root
 
-    # 1 先bfs
+    # 1 先bfs/dfs
     array = _bfs(root)
-    # 2 二分法重构新的平衡二叉树
+    # 2 排序
+    array.sort(key=lambda elem: elem.val)
+    # 3 二分法重构新的平衡二叉树
     new_root = _erfen(array)
 
     return new_root
