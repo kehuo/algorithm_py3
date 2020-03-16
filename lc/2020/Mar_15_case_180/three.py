@@ -59,6 +59,7 @@ def balanceBST(root: TreeNode):
 
     # 1 先bfs
     array = _bfs(root)
+    # 2 二分法重构新的平衡二叉树
     new_root = _erfen(array)
 
     return new_root
