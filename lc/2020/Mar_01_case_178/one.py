@@ -1,6 +1,7 @@
 # @File: one
 # @Author: Kevin Huo
 # @LastUpdate: 3/1/2020 1:14 PM
+from copy import deepcopy
 
 
 def smaller_nums_than_current(nums):
@@ -28,27 +29,25 @@ def smaller_nums_than_current(nums):
     示例 3：
     输入：nums = [7,7,7,7]
     输出：[0,0,0,0]
-     
 
     提示：
     2 <= nums.length <= 500
     0 <= nums[i] <= 100
     """
     d = {}
-    count = []
-    for idx in range(len(nums)):
-        d[idx] = 0
+    sort_nums = deepcopy(nums)
+    sort_nums.sort()
+    for i in range(len(sort_nums)):
+        if sort_nums[i] in d:
+            continue
+        d[sort_nums[i]] = i
 
-    for idx in range(len(nums)):
-        n = nums[idx]
-        for k in d:
-            if n < nums[d[k]]:
-                d[k] += 1
-    print(d)
-    return [d[i] for i in range(len(nums))]
+    return [d[nums[idx]] for idx in range(len(nums))]
 
 
 if __name__ == '__main__':
-    tests = [8,1,2,2,3]
+    # 答案 = [4, 0, 1, 1, 3]
+    tests = [8, 1, 2, 2, 3]
+
     res = smaller_nums_than_current(tests)
     print(res)

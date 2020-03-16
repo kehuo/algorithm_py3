@@ -3,7 +3,7 @@
 # @LastUpdate: 3/1/2020 2:26 PM
 
 
-def rank_teams():
+def rank_teams(votes):
     """
     https://leetcode-cn.com/problems/rank-teams-by-votes
     题目描述:
@@ -57,3 +57,44 @@ def rank_teams():
     votes[i] 中的所有字母都是唯一的
     votes[0] 中出现的所有字母 同样也 出现在 votes[j] 中，其中 1 <= j < votes.length
     """
+    # 1. 统计每个队伍的投票情况
+    d = {}
+    for v in votes:
+        # v = "ABC"
+        for i in range(len(v)):
+            # i = 0, one = "A"
+            one = v[i]
+            if i + 1 not in d:
+                d[i + 1] = {}
+                for each in v:
+                    d[i + 1][each] = 0
+
+            d[i + 1][one] += 1
+    print("总体统计结果: %s" % d)
+
+    # 2. 根据投票情况, 构造排名结果 res
+    # todo 这里需要递归res中的每一项, 直到满足2者其中一个结果，跳出递归:
+    # a. res中每一项的长度都为1
+    # b. 已经遍历完 d 的每一项, 循环结束后, 不论res中是否还有长度>1的项, 都跳出递归
+
+    res = []
+    for i in d:
+        one = sorted(d[i].items(), key=lambda x: x[1], reverse=True)
+        one.sort()
+        print(one)
+        start = 0
+        for j in range(len(one)):
+            if j == len(one) - 1:
+                res.append([x[0] for x in one[start:j + 1]])
+            else:
+                if one[j] > one[j + 1]:
+                    res.append([x[0] for x in one[start:j + 1]])
+                    start = j + 1
+        print("res: ", res)
+        print("")
+    return res
+
+
+if __name__ == '__main__':
+    test = ["BCA", "CAB", "CBA", "ABC", "ACB", "BAC"]
+    print(rank_teams(test))
