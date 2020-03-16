@@ -43,7 +43,7 @@ def balanceBST(root: TreeNode):
         _array = []
         q = [_node]
         while q:
-            # 和bfs唯一的区别, 就是把pop(0) 改成 pop(-1)
+            # 和bfs唯一的区别, 就是把pop(0) 改成 pop(-1), 时间会比 pop(0) 快20倍+ (bfs用时6448ms, dfs用时300ms)
             curr = q.pop(-1)
 
             if curr.left:
@@ -71,8 +71,8 @@ def balanceBST(root: TreeNode):
 
         return _root
 
-    # 1 先bfs/dfs
-    array = _bfs(root)
+    # 1 先bfs/dfs (由于bfs中的pop(0)非常慢, 所以如果这里用dfs 的 pop(-1), 算法所需时间会比bfs快20倍+)
+    array = _dfs(root)
     # 2 排序
     array.sort(key=lambda elem: elem.val)
     # 3 二分法重构新的平衡二叉树
