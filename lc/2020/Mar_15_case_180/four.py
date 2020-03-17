@@ -349,6 +349,10 @@ def maxPerformance_v2(n, speed, efficiency, k):
 class Node(object):
     """从这里开始是自己的实现"""
     def __init__(self, idx_in_speed, is_root, layer, A, B, parent_node, child_node_list):
+        """
+        A: 一个节点的 speed
+        B: 一个节点的 efficiency
+        p: performance = A*B"""
         self.idx_in_speed = idx_in_speed
         self.is_root = is_root
         self.layer = layer
