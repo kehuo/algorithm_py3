@@ -2,7 +2,6 @@
 # @Author: Kevin Huo
 # @LastUpdate: 3/22/2020 12:42 AM
 
-import time
 from copy import deepcopy
 
 
@@ -22,7 +21,7 @@ def hasValidPath(grid):
 
             self.valid = True
             if (self.idx[0] < 0) or (self.idx[1] < 0) or (self.idx[0] >= len(grid)) or (self.idx[1] >= len(grid[0])):
-                # print("非法node, 结束")
+                print("当前node非法: %s" % self.idx)
                 self.valid = False
 
         def find_next_node(self, _direction_map, _visited):
@@ -80,7 +79,10 @@ def hasValidPath(grid):
                 return
 
             # 对于 _node, 使用 while True 循环, 判断他是否可以顺利走到 grid[max_row - 1][max_col - 1]
+            c = 0
             while True:
+                c += 1
+                # print("寻找节点循环, 当前node=%s" % self.start_node.idx)
                 if self.start_node.idx == [self.max_row - 1, self.max_col - 1]:
                     # print("已到达终点, curr_idx = %s, 退出循环" % self.start_node.idx)
                     break
@@ -114,6 +116,7 @@ def hasValidPath(grid):
                 else:
                     self.has_valid_path = False
                     break
+            print("一共经历了%d个节点" % c)
 
     # 主函数开始
     # 最多 300 行, 300 列
@@ -150,31 +153,41 @@ def hasValidPath(grid):
                      5: ["left", "up"],
                      6: ["right", "up"]}
 
-    root = Node([0, 0])
     # 该map用来获得不同 root 节点的 "下一个节点" - 我将他和 direction_map 单独分开的原因是: 对于值=4的root节点, 它有2个能走的下一个节点, 比较麻烦
-    start_node_map = {1: [[0, 1]],
-                      2: [[1, 0]],
-                      3: [[1, 0]],
-                      4: [[1, 0], [0, 1]],
+    start_node_map = {1: [[0, 1, "right"]],
+                      2: [[1, 0, "down"]],
+                      3: [[1, 0, "down"]],
+                      4: [[1, 0, "down"], [0, 1, "right"]],
                       5: [],
-                      6: [[0, 1]]}
+                      6: [[0, 1], "right"]}
 
-    root.find_next_node(direction_map, _visited=[])
     root_value = grid[0][0]
-
     for each_start_node_idx in start_node_map[root_value]:
-        s = Node(each_start_node_idx)
+        sliced_each_node_idx = each_start_node_idx[:2]
+        s = Node(sliced_each_node_idx)
+        # print("路径的第一个子节点: %s" % s.idx)
+        if grid[each_start_node_idx[0]][each_start_node_idx[1]] not in node_map[root_value][each_start_node_idx[2]]:
+            res = False
+            continue
+
         p = Path(start_node=s, max_row=m, max_col=n)
         p.find_valid_path_for_single_node(direction_map, node_map)
         res = p.has_valid_path
         if res is True:
             return res
-        return res
+    return res
+
+
+def hasValidPath_v2(grid):
+    """
+    todo 以上函数超时可能是太多拷贝 和 类的创建, 我会在这个v2函数中简化上面函数, 去掉不必要的类和拷贝, 看是否可以通过测试
+    """
+    pass
 
 
 if __name__ == '__main__':
     # [True, False, False, True, True, True]
-    # todo 最后一个会超时
+    # todo 最后一个答案正确, 是True, 但是会超时
     t = [[[2, 4, 3], [6, 5, 2]],
          [[1, 2, 1], [1, 2, 1]],
          [[1, 1, 2]],
