@@ -142,6 +142,7 @@ def hasValidPath(grid):
             "right": [1, 3, 5]}
     }
 
+    # 该Map用来寻找一个(非root)节点的唯一一个"下一个节点"
     direction_map = {1: ["left", "right"],
                      2: ["up", "down"],
                      3: ["left", "down"],
@@ -150,6 +151,7 @@ def hasValidPath(grid):
                      6: ["right", "up"]}
 
     root = Node([0, 0])
+    # 该map用来获得不同 root 节点的 "下一个节点" - 我将他和 direction_map 单独分开的原因是: 对于值=4的root节点, 它有2个能走的下一个节点, 比较麻烦
     start_node_map = {1: [[0, 1]],
                       2: [[1, 0]],
                       3: [[1, 0]],
