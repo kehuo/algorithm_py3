@@ -12,11 +12,9 @@ def hasValidPath(grid):
         """
         def __init__(self, node_idx):
             """
-            row: 当前node 在 grid 的第 row-1 行
-            col: 当前node 在 grid 的第 col-1 列
-            value: grid[row-1][col[-1]]
+            self.idx[0] 是该节点在 grid 所在的行 (比如第0行)
+            self.idx[1] 是该节点在 grid 所在的列
             is_root: 只有 grid[0][0] 是根节点
-            possible_next_nodes: 一个映射字典
             """
             self.idx = node_idx
             self.is_root = True if node_idx == [0, 0] else False
@@ -73,20 +71,10 @@ def hasValidPath(grid):
             self.has_valid_path = True
 
         def find_valid_path_for_single_node(self, _direction_map, _node_map):
-            """对于每一个 [0, 0] 的其中一个子节点, 找路径, 返回True或者False
-            **
-            注意
-            ==========
-            这个函数中传入的 _node, 肯定不是 root_node, 因为 root_node 可能有2个可以走的路径.
-            但是对于非root_node, 他最多只有一条路径可以走.
-            比如如果根节点 Node([0, 0]) 的2个子节点分别是 [Node([0, 1]), Node([1, 0])], 那么
-            这个函数的输入有可能是  _node= Node([0, 1]) 或者 _node = Node([1, 0])
-            **
-
-             参数解释
-             ==========
-             这个Map存储了: 对于一个节点, 他支持的"下一个节点"的值
             """
+            搜索一个(非root)节点的路径
+            """
+            # 1. 有点多余, 但是宁可多写, 也避免报错
             if self.start_node.idx == [0, 0]:
                 self.has_valid_path = False
                 return
@@ -98,10 +86,10 @@ def hasValidPath(grid):
                     break
                 # time.sleep(1)
 
-                # 将当前 node 的 iex 放入 visited
+                # 将当前 node 的 idx 放入 visited, 表明已经访问过该节点
                 self._visited.append(self.start_node.idx)
 
-                # 找到唯一的 "下一个节点"
+                # 根据主函数中定义的 direction_map, 找到唯一的 "下一个节点"
                 self.start_node.find_next_node(_direction_map=_direction_map, _visited=self._visited)
                 if self.start_node.next["node"] is None:
                     self.has_valid_path = False
@@ -116,6 +104,7 @@ def hasValidPath(grid):
                 #     self.start_node.idx, next_node.idx, next_value, next_direction
                 # ))
 
+                # 若同时符合这些要求, 则可以作为下一个节点进行进一步的搜索.
                 if (0 <= next_node.idx[0] < m) \
                         and (0 <= next_node.idx[1] < n) \
                         and (self.start_node.idx != next_node.idx) \
@@ -173,7 +162,7 @@ def hasValidPath(grid):
 
     for each_start_node_idx in start_node_map[root_value]:
         s = Node(each_start_node_idx)
-        p = p = Path(start_node=s, max_row=m, max_col=n)
+        p = Path(start_node=s, max_row=m, max_col=n)
         p.find_valid_path_for_single_node(direction_map, node_map)
         res = p.has_valid_path
         if res is True:
@@ -584,6 +573,6 @@ if __name__ == '__main__':
            6, 5, 6, 5, 6, 5, 6, 5, 6, 5, 6, 5, 6, 5, 6, 5, 6, 5, 6, 5, 6, 5, 6, 5, 6, 5, 6, 5, 6, 5, 6, 5, 6, 5, 6, 5,
            6, 5, 6, 5, 6, 5, 6, 5, 6, 5, 6, 5, 6, 5, 6, 5, 6, 5, 6]]
          ]
-    _ti = 6
+    _ti = 7
     is_valid = hasValidPath(t[_ti])
     print(is_valid)
