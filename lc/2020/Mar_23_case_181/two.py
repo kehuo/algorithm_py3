@@ -47,10 +47,13 @@ def sumFourDivisors(nums):
 
 
 def sumFourDivisors_v2(nums):
-    print("题目开始====================")
+    """答案正确, 时间会超时"""
+    # print("题目开始====================")
     res = 0
 
-    for n in nums:
+    for k in range(len(nums)):
+        n = nums[k]
+        # print("第%s个n=%s开始了===================\n" % (k+1, n))
         if n < 6:
             continue
 
@@ -69,28 +72,39 @@ def sumFourDivisors_v2(nums):
                     n_sum += sum([1, n, i, shang])
 
                     visited.extend([i, shang])
+                    # print("bingo! i=%s, n=%s, shang=%s, n_sum=%s" % (i, n, shang, n_sum))
                 else:
                     if i in visited:
                         continue
+                    # print("可惜! 遇到一个可以整除的i=%s, 但是已有因数%s, 所以退出while" % (i, visited))
                     # 虽然能除尽, 但是之前已经找到因数(在visited里)了, 所以当前n的因数>4, 排除在外
                     break
             if i == end - 1:
                 if BINGO:
                     res += n_sum
+                    # print("恭喜! 当前n=%s有4个因数%s, 可以加到res中. 总结-----------当前n_sum=%s, res=%s" % (n, visited, n_sum, res))
     return res
 
 
 def sumFourDivisors_v3(nums):
     """
+    答案正确, 会在这个测试数据超时:
+    [98645,91932,95506,98457,95219,92232, ....]
     quotient = 商
     reminder = 余数
 
     21 // 2 = 10
+
+    这个版本比v2最主要的区别在于, 我会在每一次得到一个被i整除的时刻, 将循环的最大的右边边界max_limit缩小, 缩小的方式是 max_limit = max_limit // i
+    比如 100, 我的初始边界是 100//2 - 1 = 50 - 1 = 49.
+    当他遇到i=2可以整除时, 我会把最大边界缩小到 49 // 2 = 24, 这样原本i要遍历到49才能结束循环, 但是由于这里缩小了边界, 只需要遍历到24就可以结束循环了。遍历的数据量整整缩小了一倍.
     """
     # print("题目开始====================")
     res = 0
 
-    for n in nums:
+    for k in range(len(nums)):
+        n = nums[k]
+        # print("第%s个新的n=%s开始了=========================\n" % (k+1, n))
         if n < 6:
             continue
 
@@ -98,10 +112,10 @@ def sumFourDivisors_v3(nums):
         n_sum = 0
         visited = []
         i = 2
-        # print("\n当前n=%s, res=%s" % (n, res))
+        max_limit = n // 2 - 1
         while True:
             # print("当前i=%s, n=%s, BINGO=%s, n_sum=%s" % (i, n, BINGO, n_sum))
-            if i > n // 2 - 1:
+            if i > max_limit:
                 # 对于 7, 11 这种质数, 这个判断是必要的
                 # print("i >= n // 2 = %s, 退出while" % (n//2))
                 break
@@ -127,24 +141,26 @@ def sumFourDivisors_v3(nums):
 
             n_sum += sum([1, i, shang, n])
 
-            n = n // i
+            max_limit = n // i
             i += 1
-            # print("bingo! 增加后的i=%s, 除以i之后后的n=%s, shang=%s, n_sum=%s" % (i, n, shang, n_sum))
+            # print("bingo! i=%s, 除以i之后后的n=%s, shang=%s, n_sum=%s" % (i-1, n, shang, n_sum))
 
         # 跳出while 循环后, 累加 n_sum
         res += n_sum
+        # print("\n循环结束! 总结 --- 结束的的i=%s, 除以当前i后的n=%s, res=%s, visited=%s" % (i-1, n, res, visited))
     return res
 
 
 if __name__ == '__main__':
-    # [32, 0, 45, 10932]
+    # 正确答案 = [32, 0, 45, 10932, 6777290, 135341358, 249058074]
     with open("./test_data/q2.json", "r", encoding="utf-8") as f:
         tests = json.load(f)
 
     length = len(tests)
-    s = 4
-    e = 5
+    s = 6
+    e = 7
     for j in range(s, e):
-        r = sumFourDivisors_v3(tests[j])
-        print("结果", r)
+        r = sumFourDivisors_v2(tests[j])
+        print("结果=%s, 数据集长度%s" % (r, len(tests[j])))
+
 

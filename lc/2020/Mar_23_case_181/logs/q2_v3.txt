@@ -1,3 +1,4 @@
+(pay) C:\Users\kehu\dev\algorithm_py3\lc\2020\Mar_23_case_181>python two.py
 第1个新的n=33125开始了=========================
 
 bingo! i=5, 除以i之后后的n=6625, shang=6625, n_sum=39756
