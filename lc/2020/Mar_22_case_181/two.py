@@ -89,7 +89,7 @@ def sumFourDivisors_v2(nums):
 def sumFourDivisors_v3(nums):
     """
     答案正确, 会在这个测试数据超时:
-    [98645,91932,95506,98457,95219,92232, ....]
+    [17595,45408,24290,47096,69315,76769,25160,29966, ...]
     quotient = 商
     reminder = 余数
 
@@ -102,8 +102,7 @@ def sumFourDivisors_v3(nums):
     # print("题目开始====================")
     res = 0
 
-    for k in range(len(nums)):
-        n = nums[k]
+    for n in nums:
         # print("第%s个新的n=%s开始了=========================\n" % (k+1, n))
         if n < 6:
             continue
