@@ -306,7 +306,16 @@ def hasValidPath_v2(grid):
     return res
 
 
+def hasValidPath_v3(grid):
+    """基于vw进一步优化时间
+    这个版本, 会将 root = [0, 0] 调整成 i = j = 0, 尽量将所有可以避免的数组, 全部改成整形数字, 降低时间.
+    """
+    res = True
+    return res
+
+
 if __name__ == '__main__':
+    # https://leetcode-cn.com/problems/check-if-there-is-a-valid-path-in-a-grid/
     # todo 目前 [[3, 4, 3, 4, ...]] 这个测试用例会超时.
     with open("./test_data/q3.json", "r", encoding="utf-8") as f:
         tests = json.load(f)
