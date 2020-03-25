@@ -3,92 +3,95 @@
 # @LastUpdate: 3/24/2020 10:14 PM
 
 from typing import List
-import time
 
 
 def respace(dictionary: List[str], sentence: str) -> int:
     """
     https://leetcode-cn.com/problems/re-space-lcci/
 
-    1 先将dictionary 根据首字母结构化城 dict类型
-    ord("a") = 97
-    ord("z") = 122
+    1 先将dictionary 根据首字母结构化城 dict类型 (即变量d)
 
-    2 遍历文章 sentence. While True循环, 用2个索引s, e 指向当前搜索的单词开头和结尾.
-        2.1 对于每一个字母 sentence[s], 令char = sentence[s], 搜索d, 是否有 d[char]
-            2.1.1 若有, 则 s 不变, 令 words = d[char], 遍历所有以 char 为首字母的 word, 看是否有完全匹配的.
-                2.1.1.1 对于每个word, 定义一个 delta 变量, 取值范围是 1 <= delta < len(word):
-                    2.1.1.1.1 如果从word[1] 直到word[-1] 全部满足 sentence[s + delta] == word[delta], 则说明 "整个 word
-                              都包含在 sentence 中, 这个word是 一个在sentence中的完整词", 那么 s = delta + 1, e = s + 1,
-                              继续下一轮 while 循环. ，
-                    2.1.1.1.2 如果在 delta 从 1 ~ len(word) -1 的过程中, 任何时刻, 发现 sentence[s + delta] != word[delta],
-                              则说明这个 word 不存在于 sentence. 这时还有一个判断:
-                              2.1.1.1.2.1 若当前word是 d[sentence[s]] 的最后一个word, 那么 s += 1, e = s + 1, res += 1, 并
-                                          进行下一轮 while 循环
-                              2.1.1.1.2.2 若当前 word 不是最后一个word, 那 delta = 1, 开始遍历下一个word
+    2 变量和参数解释
+    d = {"a": [("apple", 5), {"always", 6}],
+         "b": {"banana", 6}, {"book", 4}],
+         ...
+         "z": [("zoom", 4)]
+    }
+
+    p = pointer 指针的缩写
+    char = 每个我准备检查的所有单词的首字母, 根据指针p变化而变化, 换句话说, p指到哪, char = sentence[p]
+    matched = 当句子和字典的某词完全匹配时, 将这个词的长度, 累加到 matched 上.
     """
+    # 1 初始化d
     d = dict()
     for i in dictionary:
         if i[0] not in d:
             d[i[0]] = []
-        d[i[0]].append(i)
-    print(d)
-    s = 0
-    e = 1
-    res = 0
+        # (i, len(i)) = ("apple", 5)
+        d[i[0]].append((i, len(i)))
+
+    # 2 主函数开始
+    p = 0
+    matched = 0
+    flag = len(sentence)
     while True:
-        time.sleep(1)
-
-        if s == len(sentence) or e == len(sentence):
+        if p >= flag:
             break
-
-        char = sentence[s]
-        print("s=%s, e=%s, char=%s,  len(sentence)=%s" % (s, e, char, len(sentence)))
+        char = sentence[p]
         if char not in d:
-            print("char=%s 不存在于d中:%s, res+1 =  %s, 直接下一轮while" % (char, list(d.keys()), res+1))
-            res += 1
-            s += 1
-            e += 1
+            p += 1
             continue
 
-        # 遍历首字母相同的所有词汇, 找到其中一个
-        words = d[sentence[s]]
-        if len(words) == 0:
-            s += 1
-            e = s + 1
-            continue
-        print("对于首字母char=%s, d中有可以检查的单词: %s" % (char, words))
-        for w in enumerate(words):
-            print("正在检查第%s个单词%s" % (w[0]+1, w[1]))
-            delta = 1
-            word_end_idx = len(w[1])
-            word = w[1]
-            # 遍历一个word的所有字母
-            while delta < word_end_idx:
-                if sentence[s + delta] == word[delta]:
-                    delta += 1
-                    continue
-                # 已经是d[char]的最后一个word, 没有更多单词可以检查了
-                if w[0] == len(words) - 1:
-                    s += 1
-                    e = s + 1
-                    res += 1
-                print("%s 不等于 %s, 该单词%s 不合法" % (sentence[s + delta], word[delta], word))
+        # 遍历d[char]
+        words = d[char]
+        # 这里排序后, 再写下面的循环就会简单. 否则还要维护一个 "max_matched_word_len", 找到所有匹配的词的最长项, 但排序后就不必了
+        words.sort(key=lambda x: x[1], reverse=True)
+        # has_matched_word 变量主要用来在一次循环的最后, 判断是否需要 p+=1, 如果为True, 说明p已经变过了, 就不用+1了, 为False则+1
+        has_matched_word = False
+        for w in words:
+            # w = ("apple", 5)
+            if sentence[p: p + w[1]] == w[0]:
+                has_matched_word = True
+                matched += w[1]
+                # print("幸运!! p=%s, sentence[p: p + w[1]]=%s, w=%s, matched=%s" % (p, sentence[p: p + w[1]], w, matched))
+                p += w[1]
+                # 这里体现了 words.sort()的好处, 只要找到第一个匹配的词, 这个词必定是长度最长的, 所以后面的短词就不用看了. 直接结束循环
                 break
-            else:
-                # delta 顺利到达word末尾, 全部相同, 符合2.1.1.1.1
-                s = delta + 1
-                e = s + 1
-                # 这个break是为了结束  for w in enumerate(words) 循环, 因为已经找到正确word, 所以不再d[char]中继续找了.
-                break
-
-    return res
+        if not has_matched_word:
+            # 如果当前指针指到的字母, 在字典中没有可以匹配的单词, 那么指针前进一位, 检查sentence中的下一个字母
+            p += 1
+    return flag - matched
 
 
 if __name__ == '__main__':
+    # todo 答案 = [7, 17, 63, 7, 0, 9]
+    # todo 最后一个我的结果是10, 但是标准答案是9, 需要再排查...
     tests = [
-        [["looked", "just", "like", "her", "brother"], "jesslookedjustliketimherbrother"]
+        [["looked", "just", "like", "her", "brother"], "jesslookedjustliketimherbrother"],
+
+        [["jxnonurhhuanyuqahjy", "phrxu", "hjunypnyhajaaqhxduu"], "qahurhoharrdjxnonurhhuanyuqahjyppnha"],
+
+        [["wccm", "wiw", "uwwiwcmiiiwmmwicuwu", "mw"],
+         "iwiwwwmuiccwwwwwmumwwwmcciwwuiwcicwwuwicuiwciwmiwicwuwwmuimccwucuuim"],
+
+        [["sssjjs", "hschjf", "hhh", "fhjchfcfshhfjhs", "sfh", "jsf", "cjschjfscscscsfjcjfcfcfh",
+          "hccccjjfchcffjjshccsjscsc", "chcfjcsshjj", "jh", "h", "f", "s", "jcshs", "jfjssjhsscfc"],
+         "sssjjssfshscfjjshsjjsjchffffs"],
+
+        [["ouf", "uucuocucoouoffcpuuf", "pf", "o", "fofopupoufuofffffocpocfccuofuupupcouocpocoooupcuu", "cf",
+          "cffooccccuoocpfupuucufoocpocucpuouofffpoupu", "opoffuoofpupcpfouoouufpcuocufo", "fopuupco",
+          "upocfucuucfucofufu", "ufoccopopuouccupooc", "fffu", "uuopuccfocopooupooucfoufop", "occ", "ppfcuu", "o",
+          "fpp", "o", "oououpuccuppuococcpoucccffcpcucoffupcoppoc", "ufc", "coupo", "ufuoufofopcpfoufoouppffofffuupfco",
+          "focfcfcfcfpuouoccupfccfpcooup", "ffupfffccpffufuuo", "cufoupupppocou",
+          "upopupopccffuofpcopouofpoffopcfcuooocppofofuuc", "oo", "pccc", "oupupcccppuuucuuouocu", "fuop",
+          "ppuocfuppff", "focofooffpfcpcupupuuooufu", "uofupoocpf", "opufcuffopcpcfcufpcpufuupffpp", "f", "opffp",
+          "fpccopc"],
+         "fofopupoufuofffffocpocfccuofuupupcouocpocoooupcuufffufffufpccopc"],
+
+        [["frrrbbrrbfrfqqbbbrb", "qr", "b", "rf", "qqbbbbfrqbrrqrffbrqqqbqqfqfrr", "r", "ffqq", "bffbqfqqbrrrf", "fq",
+          "qfr", "fr", "rqrrbfbfq", "r", "f", "qbqbrbrbqfqbbbfbbbfbq", "bqqbbbqrbbrf", "f"],
+         "bqqffbqbbfqrfrrrbbrrbfrfqqbbbrbfqfffffrfqfqfffffrrfqfrrqbqfrbfrqqrfrbrbbqbqbqqfqrfbfrfr"]
     ]
-    t = tests[0]
-    rc = respace(*t)
+    t = tests[5]
+    rc = respace(t[0], t[1].lstrip())
     print(rc)
