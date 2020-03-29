@@ -5,8 +5,10 @@
 
 from typing import List
 
+
 def numRookCaptures(self, board: List[List[str]]) -> int:
-    """https://leetcode-cn.com/problems/available-captures-for-rook/
+    """
+    https://leetcode-cn.com/problems/available-captures-for-rook/
     由于棋盘大小固定 8x8, 所以基本可以忽略复杂度太高导致超时的问题
 
     1. 遍历棋盘, 找到唯一的 白色车 R. 找到后记录R的行列值 pr 和 pc, 终止循环 (pr = point row, pc = point col 的简写)
