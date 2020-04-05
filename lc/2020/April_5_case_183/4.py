@@ -156,7 +156,6 @@ def stoneGameIII(stoneValue: List[int]) -> str:
         res = "Bob"
     else:
         res = "Tie"
-    print(res)
     return res
 
 

@@ -3,24 +3,23 @@ import time
 
 def longestDiverseString(a: int, b: int, c: int) -> str:
     """
+    最长的快乐子串
+    https://leetcode-cn.com/problems/longest-happy-string/
     已经提交 leetcode 并通过.
     """
     res = ""
 
     t = [["a", a], ["b", b], ["c", c]]
 
-    print(t)
     while True:
-        # time.sleep(1)
         t.sort(key=lambda x: x[1], reverse=True)
-        print("大循环开始, t=%s, res=%s" % (t, res))
         old_res = res
-        # bingo = None
         if len(res) < 2:
             for each in t:
                 if each[1] <= 0:
                     t.remove(each)
                     # print("%s用光了, 当前t=%s" % (each, t))
+
             # 从 d中挑剩下最多的, 放入 res
             bingo = t[0][0]
             res += bingo
@@ -31,25 +30,19 @@ def longestDiverseString(a: int, b: int, c: int) -> str:
             # res="abc", len(res) = 3, res[-1] = "c", res[-2] == "b"
             start = 0
             while True:
-                print("\n循环开始, start=%s, res=%s t=%s" % (start, res, t))
-                # time.sleep(1)
-
                 for each in t:
                     if each[1] <= 0:
                         t.remove(each)
                         print("%s用光了, 当前t=%s" % (each, t))
 
                 if start == len(t):
-                    print("end")
                     break
 
                 t.sort(key=lambda x: x[1], reverse=True)
                 curr_t = t[start:]
                 bingo = curr_t[0][0]
-                print("t[start:] = %s, bingo=%s" % (t[start:], bingo))
                 if (res[-1] == bingo) and (res[-2] == bingo):
-                    # 快乐, 不行
-                    print("有快乐, res=%s, bingo=%s" % (res, bingo))
+                    # "aaa" / "bbb" / "ccc", 不行
                     start += 1
                     continue
                 else:
@@ -60,7 +53,6 @@ def longestDiverseString(a: int, b: int, c: int) -> str:
 
         if res == old_res:
             break
-    print(res, len(res))
     return res
 
 

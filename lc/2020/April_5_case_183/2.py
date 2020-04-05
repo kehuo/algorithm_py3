@@ -1,4 +1,9 @@
 def numSteps(s: str) -> int:
+    """
+    https://leetcode-cn.com/problems/number-of-steps-to-reduce-a-number-in-binary-representation-to-one/
+    将二进制表示减到 1 的步骤数
+    已通过
+    """
     def add_(_sn):
         _s = str(_sn)
         _i = len(_s) - 1
