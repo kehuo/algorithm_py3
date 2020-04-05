@@ -187,7 +187,8 @@ def stoneGameIII_dp(stoneValue: List[int]) -> str:
     """
     n = len(stoneValue)
 
-    dp = [0] * (n+3)
+    # n + 3的原因, 是避免 dp[i+2] 和 dp[i+2] 的 IndexError
+    dp = [0] * (n + 3)
     current_sum = 0
     for i in range(n-1, -1, -1):
         # 倒序
@@ -195,45 +196,12 @@ def stoneGameIII_dp(stoneValue: List[int]) -> str:
         if i == n - 1:
             dp[i] = stoneValue[-1]
             continue
-        try:
-            dp[i] = current_sum - min(dp[i+1], dp[i+2], dp[i+3])
-        except IndexError:
-            if i == n-2:
-                last_one = dp[i + 1]
-                if last_one >= 0:
-                    # 正的Alice就自己拿了，不给Bob留
-                    dp[i] = current_sum
-                else:
-                    # 如果负的, 那留给bob, 自己不需要 (因为curr_sum已经把这个负值加进去了, 所以再把它减出去就行了)
-                    dp[i] = current_sum - last_one
-            elif i == n - 3:
-                last_two = dp[i + 1]
-                last_one = dp[i + 2]
-                # 和 i = n-2一样, 正的Alice自己拿, 负留给Bob
-                if last_one >= 0:
-                    if last_two >= 0:
-                        # [正, 正] 则Alice都拿
-                        dp[i] += current_sum
-                    else:
-                        # [负, 正] 这需要计算一下俩加起来是正是负, 正则拿, 负则不拿.
-                        if (last_two + last_one) >= 0:
-                            # [负, 正]. 且和为正, 可拿
-                            dp[i] = current_sum
-                        else:
-                            # [负, 正], 且和为负, 这种就两个都不拿.
-                            dp[i] = current_sum - last_two - last_one
-                else:
-                    # [正, 负] 只要 last_two(正), 不要last_one(负)
-                    if last_two >= 0:
-                        dp[i] = current_sum - last_one
-                    else:
-                        # [负, 负], 俩都不要
-                        dp[i] = current_sum - last_one - last_two
+
     # 由于比赛规定Alice必须先拿, 所以 dp[0] 肯定是 Alice, 所以 Bob的分数 = 总分 - Alice的分数 = sum(stoneValue) - dp[0]
     # 即 score_Alice = dp[0]
     # score_Bob = sum(stoneValue) - dp[0]
     score_Alice = dp[0]
-    score_Bob = sum(stoneValue) - dp[0]
+    score_Bob = current_sum - dp[0]
     print(dp)
     if score_Alice == score_Bob:
         print("tie")
@@ -247,8 +215,8 @@ def stoneGameIII_dp(stoneValue: List[int]) -> str:
 
 
 if __name__ == '__main__':
-    # todo 对于测试用例 [-1, -2, -3] 来说, 我的函数逻辑其实是错的, 需要完全重写, 这道题我的思路, 是错的. (但是错虽错, 先留着当草稿)
-    # 2020/4/5 注释 - 用动态规划, 提交leetcode已经通过 700ms 用时
+    # todo 对于测试用例 [-1, -2, -3] 来说, 我的v1版本函数逻辑其实是错的, 需要完全重写, 这道题我的v1思路, 是错的.
+    # 2020/4/5 注释 - v2版本用动态规划, 提交leetcode已经通过 700ms 用时
     # answer = ["Bob", "Tie", "Alice", "Tie"]
     tests = [
         [1, 2, 3, 7],
