@@ -5,6 +5,8 @@ import time
 def stoneGameIII(stoneValue: List[int]) -> str:
     def _opt(_self_score, _other_score, _start, _arr):
         """
+        https://leetcode-cn.com/problems/stone-game-iii/solution/xian-shou-de-zhuan-hua-by-zuo-ni-ai-chi-de-tang-se/
+
         选择方案:
         在 _self_score 所有的3种可选方案中, 选择其中一个, 使得:
         (_self_score + 选中方案新增的 score) > max((_other_score + 另一个人3种方案的dense))
@@ -158,8 +160,95 @@ def stoneGameIII(stoneValue: List[int]) -> str:
     return res
 
 
+def stoneGameIII_dp(stoneValue: List[int]) -> str:
+    """
+    动态规划思路
+
+    根据<算法导论>第15章, 动态规划有2种方式:
+    1 自底向上的动态规划
+    2 自顶向下, 但是带 "备忘"功能的 动态规划.
+
+    传统的 "递归" 解法, 就是自顶向下. 但是递归方式不带备忘, 但是动态规划是 "带备忘的", 可以避免大量的重复计算.
+    "关于自顶向下带备忘的动态规划", 详情可以参考该项目下 算法导论/第四部分/ 目录下第15章 section.py 的 memoized 函数.
+
+    这个题就打算采用 "自顶向下的带备忘的动态规划"
+
+    思路, 用 dp 数组, 记录 每个可选的子数组的最优解. 对于一个数组 stoneValue:
+    假设 n 代表数组的长度, 即 n = len(stoneValue)
+    所以, stoneValue[n-1] 就是 stoneValue 数组的最后一项, 即 stoneValue[-1]
+    1. (动态规划的基准情况) 如果子数组只有 stoneValue 的最后一项, 那么你只能选它, 所以 dp[n-1] = stoneValue[-1]
+
+    2. 对于其他的 i:
+    在写出递推公式之前, 我先定义 d[i] 代表 "从 stoneValue 数组的第 i 项 到最后一项 的子数组中, 的最优解."
+
+    所以, 当 i = n-1 时, dp[i] = dp[n-1] = stoneValue[-1]
+    当 0 <= i < n-1 时, dp[i] = sum{i, n} - min{dp[i + 1], dp[i + 2], dp[i + 3]}
+    本题的目标 -- 判断 dp[0] 和 (sum(stoneValue) - dp[0]) 的大小. (因为题目说明Alice 必须先拿, 所以 dp[0] = Alice)
+    """
+    n = len(stoneValue)
+
+    dp = [0] * (n+3)
+    current_sum = 0
+    for i in range(n-1, -1, -1):
+        # 倒序
+        current_sum += stoneValue[i]
+        if i == n - 1:
+            dp[i] = stoneValue[-1]
+            continue
+        try:
+            dp[i] = current_sum - min(dp[i+1], dp[i+2], dp[i+3])
+        except IndexError:
+            if i == n-2:
+                last_one = dp[i + 1]
+                if last_one >= 0:
+                    # 正的Alice就自己拿了，不给Bob留
+                    dp[i] = current_sum
+                else:
+                    # 如果负的, 那留给bob, 自己不需要 (因为curr_sum已经把这个负值加进去了, 所以再把它减出去就行了)
+                    dp[i] = current_sum - last_one
+            elif i == n - 3:
+                last_two = dp[i + 1]
+                last_one = dp[i + 2]
+                # 和 i = n-2一样, 正的Alice自己拿, 负留给Bob
+                if last_one >= 0:
+                    if last_two >= 0:
+                        # [正, 正] 则Alice都拿
+                        dp[i] += current_sum
+                    else:
+                        # [负, 正] 这需要计算一下俩加起来是正是负, 正则拿, 负则不拿.
+                        if (last_two + last_one) >= 0:
+                            # [负, 正]. 且和为正, 可拿
+                            dp[i] = current_sum
+                        else:
+                            # [负, 正], 且和为负, 这种就两个都不拿.
+                            dp[i] = current_sum - last_two - last_one
+                else:
+                    # [正, 负] 只要 last_two(正), 不要last_one(负)
+                    if last_two >= 0:
+                        dp[i] = current_sum - last_one
+                    else:
+                        # [负, 负], 俩都不要
+                        dp[i] = current_sum - last_one - last_two
+    # 由于比赛规定Alice必须先拿, 所以 dp[0] 肯定是 Alice, 所以 Bob的分数 = 总分 - Alice的分数 = sum(stoneValue) - dp[0]
+    # 即 score_Alice = dp[0]
+    # score_Bob = sum(stoneValue) - dp[0]
+    score_Alice = dp[0]
+    score_Bob = sum(stoneValue) - dp[0]
+    print(dp)
+    if score_Alice == score_Bob:
+        print("tie")
+        return "Tie"
+    elif score_Alice > score_Bob:
+        print("alice")
+        return "Alice"
+    elif score_Alice < score_Bob:
+        print("bob")
+        return "Bob"
+
+
 if __name__ == '__main__':
     # todo 对于测试用例 [-1, -2, -3] 来说, 我的函数逻辑其实是错的, 需要完全重写, 这道题我的思路, 是错的. (但是错虽错, 先留着当草稿)
+    # 2020/4/5 注释 - 用动态规划, 提交leetcode已经通过 700ms 用时
     # answer = ["Bob", "Tie", "Alice", "Tie"]
     tests = [
         [1, 2, 3, 7],
@@ -167,6 +256,10 @@ if __name__ == '__main__':
         [1, 2, 3, -1, -2, -3, 7],
         [-1, -2, -3]
     ]
-
+    # dp数组:
+    # [
+    #   [6, 12, 10, 7],
+    #   [6, 11, 9, 6]
+    # ]
     t = tests[3]
-    r = stoneGameIII(t)
+    r = stoneGameIII_dp(t)
