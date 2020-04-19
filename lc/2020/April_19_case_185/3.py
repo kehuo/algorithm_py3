@@ -99,27 +99,31 @@ def minNumberOfFrogs_v2(croakOfFrogs: str) -> int:
         return -1
 
     next_map = {"c": "r", "r": "o", "o": "a", "a": "k", "k": "c"}
-    # 0= 空闲, 1=忙碌
     res = 1
     state = {"c": 1, "r": 0, "o": 0, "a": 0, "k": 0}
+
+    # counter 用来在最后判断是返回 res 还是 -1
+    # 简单来说, 必须保证 5个字母的出现次数都完全相同, 否则直接返回 -1
     counter = {"c": 0, "r": 0, "o": 0, "a": 0, "k": 0}
     for i in range(len(croakOfFrogs)):
         s = croakOfFrogs[i]
         counter[s] += 1
-        # step 1 挑青蛙 或者 创建新青蛙
+
         if state[s] == 0:
             if s == "c":
-                # 创建新青蛙
+                # 创建新青蛙 (res+=1)
                 res += 1
                 state["c"] += 1
             else:
-                print("当前字母%s 没有任何青蛙可以叫他, state/q/d中都没有, 所以函数结束, 返回-1" % s)
+                print("当前字母%s 没有任何青蛙可以叫他, 所以函数结束, 返回-1" % s)
                 return -1
 
         state[s] -= 1
         next_s = next_map[s]
         state[next_s] += 1
 
+    # 如果 check_arr = [244, 244, 122, 33, 244], 那么返回-1
+    # 如果 check_arr = [122, 122, 122, 122, 122], 每个字母出现次数都相同, 那么返回 res
     check_arr = list(counter.values())
 
     return res if max(check_arr) == min(check_arr) else -1
