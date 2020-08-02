@@ -8,10 +8,13 @@ from typing import List
 class Solution:
     def check(self, grid) -> (bool, dict):
         """
+        已经通过
+        https://leetcode-cn.com/contest/weekly-contest-200/problems/minimum-swaps-to-arrange-a-binary-grid/
+
         对于长度为 n 的grid, d的长度是 n-1
         d = {
-            从左到右连续2个0的索引: [1, 2],
-            从左到右连续1个0的索引: [1, 2]
+            从右到左连续2个0的索引: [1, 2],
+            从右到左连续1个0的索引: [1, 2]
         }
 
         对于 grid = [
@@ -36,21 +39,27 @@ class Solution:
 
         not_valid_count = 0
 
-        meet_one = False
+        used = []
         for i in range(length_g):
+            meet_one = False
             g = grid[i]
             for n in range(1, length_g_one):
                 if length_g_one - n not in d:
                     d[length_g_one - n] = []
                 if g[n:] == [0] * (length_g_one - n):
+                    # print("g: %s, g[n:]=%s" % (g, g[n:]))
                     meet_one = True
-                    d[length_g_one - n].append(i)
+                    if i not in used:
+                        d[length_g_one - n].append(i)
+                    if len(d[length_g_one - n]) == 1:
+                        used.append(i)
             if meet_one is False:
                 if not_valid_count == 0:
                     not_valid_count += 1
                     continue
                 res = False
                 break
+        # print("end, d=%s" % d)
         if res is True:
             for k, v in d.items():
                 if len(v) == 0:
@@ -85,7 +94,7 @@ class Solution:
 
         """
         is_valid, d = self.check(grid)
-        # print(is_valid)
+        print(is_valid)
         # print(d)
         if is_valid is False:
             return -1
@@ -125,12 +134,52 @@ class Solution:
             count -= 1
         return res
 
+    def minSwaps_v2(self, grid: List[List[int]]) -> int:
+        """
+        ZL version
+        虽然输入是2二维数组，但是，因为从题目可以看出这个问题是一维问题，所以该算法将二维grid压缩成一维rows 进行处理.
+
+        该题需要有2部分:
+        1 - 数据预处理
+        2 - 核心算法
+        """
+        # 1 - 数据预处理，将二维数组grid 压缩成一维 rows
+        rows = []
+        for row in grid:
+            cnt = 0
+            for cell in row[::-1]:
+                if cell == 0:
+                    cnt += 1
+                else:
+                    break
+            rows.append(cnt)
+
+        # 2-  核心算法部分
+        n = len(rows)
+        shift = [0] * n
+        now = 0
+        required = n - 1
+        ans = 0
+
+        # print(rows,shift)
+        while now < n:
+            for i in range(n):
+                if rows[i] >= required:
+                    ans += i + shift[i] - now
+                    rows[i] = -1
+                    break
+                else:
+                    shift[i] += 1
+            # 和for循环配合使用, 当一整个for循环都遍历完成，而且没有触发过break的话，则进入else
+            else:
+                return -1
+            # print(rows,shift,ans)
+            now += 1
+            required -= 1
+        return ans
+
 
 if __name__ == '__main__':
-    """
-    https://leetcode-cn.com/contest/weekly-contest-200/problems/minimum-swaps-to-arrange-a-binary-grid/
-    """
     tests = [
         [[0, 1, 1, 0], [1, 1, 1, 0], [1, 1, 1, 0], [1, 0, 0, 0]]
     ]
-    # t = tests[0]
