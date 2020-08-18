@@ -106,6 +106,8 @@ class Solution:
                 for i in children:
                     if i == 0:
                         return level
+                    if i not in visited:
+                        visited[i] = True
                     if visited[i] is not True:
                         visited[i] = True
                         q.append(i)
