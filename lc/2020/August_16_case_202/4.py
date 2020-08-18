@@ -2,6 +2,8 @@
 # @Author: Kevin Huo
 # @LastUpdate: 8/16/2020 1:07 PM
 
+from collections import deque
+
 
 class Solution:
     """
@@ -69,18 +71,52 @@ class Solution:
 
         return dp[n]
 
-    def minDaysPerfect(self, n: int) -> int:
+    def _get_children(self, n):
+        children = [n - 1]
+        if n % 2 == 0:
+            children.append(n // 2)
+        if n % 3 == 0:
+            children.append(n // 3)
+        return children
+
+    def minDaysGraphBFS(self, n: int) -> int:
         """
-        最好的解法
+        用 图 + bfs 求出图中 n 节点到 0节点的最短路径
+        已经提交通过 用时228ms 内存14MB
+
+        bfs 用队列, 根节点是 n
+        注意 visited 用下面这种写法，是因为 visited[i] == True 判断只需要常数复杂度.
+        但是如果用 visited = [n], 那么判断 i not in visited 需要线性复杂度。
+
+        但是！！！！！！！！！！！！！！！！！！
+        第一种在n太大时，会报错memoryerror, 所以折中之后，还是用字典吧.
         """
-        pass
+        q = deque([n])
+        # n太大时会报错 memory error 所以放弃使用
+        # visited = [False] * (n + 1)
+        # visited[n] = True
+        visited = {n: True}
+        level = 0
+        while q:
+            level += 1
+            for _ in range(len(q)):
+                curr = q.popleft()
+                # 求出curr 的所有个子节点
+                children = self._get_children(curr)
+                for i in children:
+                    if i == 0:
+                        return level
+                    if visited[i] is not True:
+                        visited[i] = True
+                        q.append(i)
 
 
 if __name__ == '__main__':
-    tests = [10, 6, 1, 56, 2, 16, 99999999, 182]
-    # 答案 = [4, 3, 1, 6, 2, 5, 30, 8]
-    t = tests[6]
+    tests = [10, 6, 1, 56, 2, 16, 99999999, 182, 638826798]
+    # 答案 = [4, 3, 1, 6, 2, 5, 30, 8, 32]
+    t = tests[8]
     s = Solution()
-    r = s.minDaysDP(t)
+    # r = s.minDaysDP(t)
+    r = s.minDaysGraphBFS(t)
 
     print(r)
