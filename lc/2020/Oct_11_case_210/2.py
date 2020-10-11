@@ -7,31 +7,45 @@ from typing import List
 
 
 class Solution(object):
-    def maximalNetworkRank(self, n: int, roads: List[List[int]]) -> int:
-        """
-        https://leetcode-cn.com/contest/weekly-contest-210/problems/maximal-network-rank/
-        todo - test[2]超时
-        """
-        if n == 2:
-            return 1 if roads else 0
-        d = defaultdict(lambda: 0)
-        for r in roads:
-            d[r[0]] += 1
-            d[r[1]] += 1
-        # print("d= %s" % dict(d))
-        res = 0
-        for i in range(n):
-            for j in range(n):
-                if i == j:
-                    continue
-                curr_zhi = d[i] + d[j]
-                if ([i, j] in roads) or ([j, i] in roads):
-                    curr_zhi -= 1
-                # print("i=%s, j=%s, zhi=%s" % (i, j, curr_zhi))
-                res = max(res, curr_zhi)
-        print(res)
-        return res
 
+
+
+#
+#
+# class Solution(object):
+#     def maximalNetworkRank(self, n: int, roads: List[List[int]]) -> int:
+#         """
+#         https://leetcode-cn.com/contest/weekly-contest-210/problems/maximal-network-rank/
+#         todo - test[2]超时
+#         """
+#         if n == 2:
+#             return 1 if roads else 0
+#         # d = defaultdict(lambda: 0)
+#         d = defaultdict(set)
+#         for u,v in roads:
+#             d[u].add(v)
+#             d[v].add(u)
+#         # d= {2: {3}, 3: {0, 2}, 0: {3, 4}, 4: {0, 1}, 1: {4}}
+#         # list(d) = [2, 3, 0, 4, 1]
+#         print("d= %s" % dict(d))
+#         print("list d = %s" % list(d))
+#         order = list(d)
+#         order.sort(key=lambda x: len(d[x]), reverse=True)
+#         print("order: %s" % order)
+#         # print("d= %s" % dict(d))
+#         res = 0
+#         for i in range(n):
+#             for j in range(n):
+#                 if i == j:
+#                     continue
+#                 curr_zhi = d[i] + d[j]
+#                 if ([i, j] in roads) or ([j, i] in roads):
+#                     curr_zhi -= 1
+#                 # print("i=%s, j=%s, zhi=%s" % (i, j, curr_zhi))
+#                 res = max(res, curr_zhi)
+#         print(res)
+#         return res
+#
 
 if __name__ == '__main__':
     # ans = [4, 4, 超时]
