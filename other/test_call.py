@@ -21,8 +21,16 @@ class A(object):
         return self.__instance
 
 
+from collections import defaultdict
+def main():
+    d = defaultdict(list)
+    d[1].append(2)
+    d[2].append(3)
+
+    keys = list(d.keys())
+    keys.sort()
+
+
 if __name__ == '__main__':
-    a = A()
-    b = A()
-    a()
-    print(a==b)
+    main()
+
