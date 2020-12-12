@@ -8,6 +8,7 @@ from typing import List
 class Solution(object):
     def longestMountain(self, A: List[int]) -> int:
         """
+        数组中最长山脉
         https://leetcode-cn.com/problems/longest-mountain-in-array/
 
         官方题解
