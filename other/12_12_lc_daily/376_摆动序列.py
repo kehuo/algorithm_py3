@@ -20,14 +20,13 @@ class Solution:
                 res+=1
             >> 如果 currk * nextk >= 0, 则不符合摆动要求
             判断结束后 i += 1
-
+        todo 没写出来 后续补充
         """
         n = len(nums)
         if n <= 1:
             return n
         if n == 2:
             return 1 if nums[0] == nums[1] else 2
-
 
 
 if __name__ == '__main__':
