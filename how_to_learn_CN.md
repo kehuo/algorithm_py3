@@ -1,5 +1,5 @@
 # 并查算法
-> * union find 对应于**不相交集合数据结构** 《算法导论21章》
+> * union find 对应于**不相交集合数据结构** 《算法导论第21章》
 > * 有两种实现方法，快速查找 quick find （链表） 和 快速求并 quick union （树）
 > * UnionFind.py中实现了这种数据结构
 > * LinkedList 定义了链表类
